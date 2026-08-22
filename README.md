@@ -72,7 +72,7 @@ jobs:
       security-events: write
     steps:
       - uses: actions/checkout@v4
-      - uses: UnboundCompute/lachesis-action@v1.0.1
+      - uses: UnboundCompute/lachesis-action@v1.0.3
         with:
           source: "."
           # fail-on: "error"   # fail the PR on guard differentials
