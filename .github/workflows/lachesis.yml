@@ -4,16 +4,53 @@ on:
   push:
     branches: [main]
 
+# One scan per language directory. Scanning each language in isolation is
+# deliberate: a single mixed-language graph currently stamps sinks for only one
+# frontend, so per-directory legs are what make every language's findings show
+# up. Each leg uploads under its own code-scanning category so the SARIF
+# uploads don't overwrite one another.
 jobs:
   scan:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       security-events: write   # required to upload SARIF to code scanning
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: [python, js, ts, c]
+    name: scan (${{ matrix.lang }})
     steps:
       - uses: actions/checkout@v4
 
-      - uses: UnboundCompute/lachesis-action@v1.0.3
+      - name: Lachesis scan (${{ matrix.lang }})
+        uses: UnboundCompute/lachesis-action@v1.0.3
         with:
-          source: "."
-          # fail-on: "error"   # fail the PR on guard differentials
+          source: "languages/${{ matrix.lang }}"
+          sarif-file: "lachesis-${{ matrix.lang }}.sarif"
+          upload: false          # we upload below with a per-language category
+          # fail-on: "error"     # uncomment to fail the PR on guard differentials
+
+      - name: Upload SARIF (${{ matrix.lang }})
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "lachesis-${{ matrix.lang }}.sarif"
+          category: "lachesis-${{ matrix.lang }}"
+
+      # C memory-safety defects are detected by the engine's candidate registry
+      # (buffer overflow, unbounded allocation), but that projection is not yet
+      # bridged into the SARIF export, so it produces no code-scanning alerts.
+      # Surface it in the job summary so the C findings are still visible here.
+      - name: C candidate registry (not yet in SARIF)
+        if: ${{ matrix.lang == 'c' }}
+        shell: bash
+        run: |
+          {
+            echo '## Lachesis — C candidate registry'
+            echo ''
+            echo 'These are detected by the engine but do not yet reach code scanning.'
+            echo ''
+            echo '```json'
+            lachesis-candidates "$RUNNER_TEMP/lachesis.kuzu" --census 2>&1 || echo 'candidate census unavailable'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
