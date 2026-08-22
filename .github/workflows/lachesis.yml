@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Lachesis scan (${{ matrix.lang }})
-        uses: UnboundCompute/lachesis-action@v1.0.1
+        uses: UnboundCompute/lachesis-action@v1.0.3
         with:
           source: "languages/${{ matrix.lang }}"
           sarif-file: "lachesis-${{ matrix.lang }}.sarif"
