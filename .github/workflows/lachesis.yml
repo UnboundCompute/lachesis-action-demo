@@ -13,3 +13,4 @@ jobs:
       - uses: UnboundCompute/lachesis-action@branded-comments
         with:
           source: "svc"
+          fail-on: "error"      # block the PR when an unguarded-sink-differential is found
