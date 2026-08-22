@@ -7,8 +7,8 @@ authorization check its sibling remembered**.
 
 ## What to look at
 
-- **Pull requests** — each PR runs the Action and annotates the changed lines inline.
-- **Security → Code scanning alerts** — the findings, ranked by severity.
+- **Pull requests** — each PR runs the Action and posts the findings inline on the diff as
+  **`Lachesis[bot]`** review comments, with a summary of counts by severity.
 - **The Actions tab** — the scan logs, and (for C) the candidate-registry census in the job summary.
 
 ## The signature finding: the guard differential
@@ -36,7 +36,7 @@ Severity mapping:
 Examples live under `languages/`, one directory per language, each scanned in its own
 matrix leg:
 
-| Language | File                       | Fires via code scanning |
+| Language | File                       | Posts as Lachesis[bot] |
 |----------|----------------------------|-------------------------|
 | Python   | `languages/python/handlers.py` | ✅ (5 paths) |
 | JavaScript | `languages/js/handlers.js`   | ✅ (3 paths) |
@@ -45,8 +45,7 @@ matrix leg:
 
 Each language directory is scanned separately on purpose: a single mixed-language graph
 currently stamps sinks for only one frontend, so per-directory legs are what make every
-language's findings show up. Each leg uploads under its own code-scanning category so the
-uploads don't overwrite one another.
+language's findings show up.
 
 ## The C caveat
 
@@ -54,9 +53,9 @@ The C example contains real memory-safety bugs — a `strcpy` buffer overflow an
 unbounded `malloc`. The engine **does** detect them (in its candidate registry:
 `memory.copy.capacity` and `memory.alloc.size`), but the Action's SARIF export currently
 queries only the taint `security-paths` projection, which does not yet stamp C sources and
-sinks. So today the C bugs **do not appear as code-scanning alerts** — the C matrix leg
+sinks. So today the C bugs **do not appear as Lachesis[bot] comments** — the C matrix leg
 prints the candidate census to the job summary instead. Bridging the candidate registry into
-SARIF is the work that would light up C in code scanning.
+SARIF is the work that would light up C on the PR.
 
 ## Using the Action in your own repo
 
@@ -69,10 +68,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      security-events: write
+      id-token: write          # prove the repo to the Lachesis app so it can post as Lachesis[bot]
     steps:
       - uses: actions/checkout@v4
-      - uses: UnboundCompute/lachesis-action@v1.0.3
+      - uses: UnboundCompute/lachesis-action@v1.0.4
         with:
           source: "."
           # fail-on: "error"   # fail the PR on guard differentials

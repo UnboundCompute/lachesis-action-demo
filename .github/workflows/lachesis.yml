@@ -1,19 +1,17 @@
 name: lachesis
 on:
   pull_request:
-  push:
-    branches: [main]
 
 jobs:
   scan:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      security-events: write   # required to upload SARIF to code scanning
+      id-token: write          # prove the repo to the Lachesis app so it can post as Lachesis[bot]
     steps:
       - uses: actions/checkout@v4
 
-      - uses: UnboundCompute/lachesis-action@v1.0.3
+      - uses: UnboundCompute/lachesis-action@v1.0.4
         with:
           source: "."
-          # fail-on: "error"   # fail the PR on guard differentials
+          # fail-on: "error"   # fail the PR on guard differentials (also mark `scan` a required check to block merges)
