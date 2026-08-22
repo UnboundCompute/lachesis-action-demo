@@ -1,0 +1,6 @@
+__pycache__/
+*.kuzu/
+*.sarif
+*.pb
+.DS_Store
+graph_out/
