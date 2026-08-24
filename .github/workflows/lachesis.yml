@@ -13,7 +13,7 @@ jobs:
 
       # Release-candidate pin: the current candidate extends the v1.0.5 contract
       # with evidence outputs, stable fingerprints, and poster-independent SARIF.
-      - uses: UnboundCompute/lachesis-action@9da18b27384d5791c84317a4599e991e443b9133
+      - uses: UnboundCompute/lachesis-action@8e3478f118a3e84d8ae8af75adab8b27b3d13b4d
         with:
           source: "."
           candidate-report: census
