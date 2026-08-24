@@ -14,4 +14,5 @@ jobs:
       - uses: UnboundCompute/lachesis-action@v1.0.5
         with:
           source: "."
+          candidate-report: census
           # fail-on: "error"   # fail the PR on guard differentials (also mark `scan` a required check to block merges)
