@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
 
       # Release-candidate pin: the census/output/poster-independent contract is unreleased from v1.0.5.
-      - uses: UnboundCompute/lachesis-action@9ea38baf4be1f8ecea3ebefb7187929ae6d8b4cb
+      - uses: UnboundCompute/lachesis-action@27b9d2c32b18147fe0253d31e2c6adfd9c89d4b4
         with:
           source: "."
           candidate-report: census
