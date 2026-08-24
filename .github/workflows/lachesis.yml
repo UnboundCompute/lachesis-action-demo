@@ -11,8 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Release-candidate pin: the census/output/poster-independent contract is unreleased from v1.0.5.
-      - uses: UnboundCompute/lachesis-action@27b9d2c32b18147fe0253d31e2c6adfd9c89d4b4
+      # Release-candidate pin: the current candidate extends the v1.0.5 contract
+      # with evidence outputs, stable fingerprints, and poster-independent SARIF.
+      - uses: UnboundCompute/lachesis-action@16c30a283da9628a5b7cd107c3941f5bca07158e
         with:
           source: "."
           candidate-report: census
