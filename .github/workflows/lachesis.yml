@@ -11,7 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: UnboundCompute/lachesis-action@v1.0.5
+      # Release-candidate pin: the census/output contract is unreleased from v1.0.5.
+      - uses: UnboundCompute/lachesis-action@bfc762d35fb9268f6fa407878bc5900eb34ab04f
         with:
           source: "."
           candidate-report: census

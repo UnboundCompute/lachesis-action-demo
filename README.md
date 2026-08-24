@@ -60,6 +60,11 @@ SARIF is the work that would light up C on the PR.
 
 ## Using the Action in your own repo
 
+The demo workflow pins the current release-candidate commit because its
+`candidate-report` input and artifact outputs are not part of the published
+`v1.0.5` tag yet. Consumer workflows should use the published tag until the next
+Action release is cut.
+
 ```yaml
 # .github/workflows/lachesis.yml
 name: lachesis
