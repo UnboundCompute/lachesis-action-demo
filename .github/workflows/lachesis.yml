@@ -11,7 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: UnboundCompute/lachesis-action@v1.0.5
+      # Release-candidate pin: the current candidate extends the v1.0.5 contract
+      # with evidence outputs, stable fingerprints, and poster-independent SARIF.
+      - uses: UnboundCompute/lachesis-action@7a28718ff89ab67e2087809d64b4cd2d9d172423
         with:
           source: "."
+          candidate-report: census
           # fail-on: "error"   # fail the PR on guard differentials (also mark `scan` a required check to block merges)

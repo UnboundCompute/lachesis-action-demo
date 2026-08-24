@@ -9,7 +9,7 @@ authorization check its sibling remembered**.
 
 - **Pull requests** — each PR runs the Action and posts the findings inline on the diff as
   **`Lachesis[bot]`** review comments, with a summary of counts by severity.
-- **The Actions tab** — the scan logs, and (for C) the candidate-registry census in the job summary.
+- **The Actions tab** — the scan logs, SARIF artifact, and (for C) the opt-in candidate-registry census in the job summary.
 
 ## The signature finding: the guard differential
 
@@ -54,10 +54,16 @@ unbounded `malloc`. The engine **does** detect them (in its candidate registry:
 `memory.copy.capacity` and `memory.alloc.size`), but the Action's SARIF export currently
 queries only the taint `security-paths` projection, which does not yet stamp C sources and
 sinks. So today the C bugs **do not appear as Lachesis[bot] comments** — the C matrix leg
-prints the candidate census to the job summary instead. Bridging the candidate registry into
+prints the candidate census to the job summary instead. The demo enables this with
+`candidate-report: census`. Bridging the candidate registry into
 SARIF is the work that would light up C on the PR.
 
 ## Using the Action in your own repo
+
+The demo workflow pins the current release-candidate commit because its
+`candidate-report`, evidence outputs, and stable finding identity extend the
+published `v1.0.5` tag. Consumer workflows should use the published tag until
+the next Action release is cut.
 
 ```yaml
 # .github/workflows/lachesis.yml
@@ -71,7 +77,7 @@ jobs:
       id-token: write          # prove the repo to the Lachesis app so it can post as Lachesis[bot]
     steps:
       - uses: actions/checkout@v4
-      - uses: UnboundCompute/lachesis-action@v1.0.4
+      - uses: UnboundCompute/lachesis-action@v1.0.5
         with:
           source: "."
           # fail-on: "error"   # fail the PR on guard differentials
